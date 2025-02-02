@@ -4,3 +4,27 @@ Scripts
 **__pycache__
 pyvenv.cfg
 .python-version
+
+# dependencies
+node_modules/
+
+# build output
+build/
+dist/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# logs
+logs
+*.log
+
+# coverage directory used by testing tools
+coverage/
