@@ -1,5 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 export default function SefariaPlugin({ sref }: { sref?: string }) {
   const a1 = 'eGFpLVJqcm1BVjBQcXNSa0NHTU1uakN4Q3RrcjdJb2Z5NTdjNUN'
@@ -112,3 +113,29 @@ export default function SefariaPlugin({ sref }: { sref?: string }) {
     </div>
   );
 }
+
+// Register as a web component
+class SefariaPluginElement extends HTMLElement {
+  static get observedAttributes() {
+    return ['sref'];
+  }
+  
+  private _root: any; // store the persistent React root
+
+  connectedCallback() {
+    const sref = this.getAttribute('sref') || undefined;
+    // Create shadow DOM and persistent React root if needed
+    if (!this.shadowRoot) this.attachShadow({ mode: 'open' });
+    if (!this._root) {
+      this._root = createRoot(this.shadowRoot!);
+      this._root.render(<SefariaPlugin sref={sref} />);
+    }
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    if (name === 'sref' && newValue !== oldValue && this._root) {
+      this._root.render(<SefariaPlugin sref={newValue} />);
+    }
+  }
+}
+customElements.define('sefaria-plugin', SefariaPluginElement);

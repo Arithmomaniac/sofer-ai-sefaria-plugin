@@ -1,14 +1,14 @@
-
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "ESNext",
+    "module": "ESNext",            // adjusted for browser modules, matching webpack settings
     "jsx": "react",
     "strict": true,
-    "outDir": "dist",
-    "allowSyntheticDefaultImports": true
+    "outDir": "dist",              // output folder should match webpack.config.js
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node"     // set for browser modules
   },
   "include": [
-    "plugin.tsx"
+    "plugin.tsx"                  // include the entry file for webpack.config.js
   ]
 }
