@@ -1,49 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 
+enum Status {
+  Idle,
+  Loading,
+  Typing,
+  Finished,
+  Error
+}
+
 export default function SefariaPlugin({ sref }: { sref?: string }) {
-  const a1 = 'eGFpLVJqcm1BVjBQcXNSa0NHTU1uakN4Q3RrcjdJb2Z5NTdjNUN'
-  const a2 = '1a0xIckhSd09pc1J3TW9qZTlhNGNsVDlnMFJBSFZHd3ZFY1RZT0lXS1VqbkVj'
-  const b = atob(`${a1}${a2}`)
-  const [counter, setCounter] = useState(0);
-  const [uiState, setUiState] = useState(0);
-  const [textContent, setTextContent] = useState('');
-  const [footerText, setFooterText] = useState('');
+  const [status, setStatus] = useState<Status>(Status.Idle);
   const [displayText, setDisplayText] = useState('');
   const [displayFooter, setDisplayFooter] = useState('');
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCounter(c => c + 1);
-      console.log(`Counter: ${counter}`);
-      console.log(`UI State: ${uiState}`);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [counter, uiState]);
+  const a1 = 'eGFpLVJqcm1BVjBQcXNSa0NHTU1uakN4Q3RrcjdJb2Z5NTdjNUN';
+  const a2 = '1a0xIckhSd09pc1J3TW9qZTlhNGNsVDlnMFJBSFZHd3ZFY1RZT0lXS1VqbkVj';
+  const b = atob(`${a1}${a2}`);
 
   useEffect(() => {
-    if ((uiState === 0 || uiState === 5) && sref) {
-      fetchData(sref);
+    if (sref) {
+      fetchAndTranslate(sref);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sref]);
 
-  async function fetchData(query: string) {
-    setUiState(1);
-    setTextContent('');
-    setFooterText('');
+  async function fetchAndTranslate(query: string) {
+    setStatus(Status.Loading);
     setDisplayText('');
     setDisplayFooter('');
     try {
       const response = await fetch(`https://www.sefaria.org/api/v3/texts/${query}`);
       const data = await response.json();
       const rawText = data.versions.find((version: any) => version.actualLanguage !== 'en').text;
-      const result = await promptLLM(rawText, query);
-      setUiState(2);
-      setTextContent(result);
-      renderResults(result, query);
-    } catch {
-      setUiState(3);
+      const translation = await promptLLM(rawText, query);
+      setStatus(Status.Typing);
+      await typeText(translation);
+      setStatus(Status.Finished);
+    } catch (error) {
+      setStatus(Status.Error);
     }
   }
 
@@ -51,12 +46,12 @@ export default function SefariaPlugin({ sref }: { sref?: string }) {
     const body = {
       messages: [
         { role: "system", content: "You are a translator" },
-        { role: "user", content: `Please translate the following text from ${query}": ${text}` }
+        { role: "user", content: `Please translate the following text from ${query}: ${text}` }
       ],
       model: "grok-beta",
       stream: false,
       temperature: 0
-    }
+    };
     const request = new Request("https://api.x.ai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -70,22 +65,20 @@ export default function SefariaPlugin({ sref }: { sref?: string }) {
     return data.choices[0].message.content;
   }
 
-  async function renderResults(fullText: string, query: string) {
-    setUiState(4);
+  async function typeText(fullText: string) {
     let accum = '';
-    for (let idx = 0; idx < fullText.length; idx++) {
-      accum += fullText[idx];
-      await sleep(Math.floor(Math.random() * 20));
+    for (let char of fullText) {
+      accum += char;
       setDisplayText(accum);
+      await sleep(Math.floor(Math.random() * 20));
     }
     const footerStr = '(Please understand! I am an experimental 🤖. I can hallucinate sometimes. 🫣)';
     let fAccum = '';
-    for (let idx = 0; idx < footerStr.length; idx++) {
-      fAccum += footerStr[idx];
-      await sleep(Math.floor(Math.random() * 50));
+    for (let char of footerStr) {
+      fAccum += char;
       setDisplayFooter(fAccum);
+      await sleep(Math.floor(Math.random() * 50));
     }
-    setUiState(5);
   }
 
   function sleep(ms: number) {
@@ -93,22 +86,26 @@ export default function SefariaPlugin({ sref }: { sref?: string }) {
   }
 
   return (
-    <div style={{fontFamily: 'Arial, sans-serif', fontSize: '18px'}}>
+    <div style={{ fontFamily: 'Arial, sans-serif', fontSize: '18px' }}>
       <div style={{
         marginTop: '1em', backgroundColor: 'rgba(0,0,0,0.05)',
         padding: '1em', borderRadius: '1em'
       }}>
-        {uiState === 1 && <h3>🤖 is 🤔 {'.'.repeat(counter % 4)}</h3>}
-        {uiState === 3 && (
+        {status === Status.Loading && <h3>🤖 is loading...</h3>}
+        {status === Status.Typing && <h3>🤖 is typing...</h3>}
+        {status === Status.Error && (
           <>
             <h3>🤖 🤒</h3>
             <small>Whoops! Something went wrong.</small>
           </>
         )}
-        {uiState === 4 && <h3>🤖 is typing {'.'.repeat(counter % 4)}</h3>}
-        {uiState === 5 && <h3>🤖 Translation of {sref}</h3>}
-        <p>{displayText}</p>
-        <small>{displayFooter}</small>
+        {(status === Status.Finished || status === Status.Typing) && (
+          <>
+            {sref && <h3>🤖 Translation of {sref}</h3>}
+            <p>{displayText}</p>
+            <small>{displayFooter}</small>
+          </>
+        )}
       </div>
     </div>
   );
