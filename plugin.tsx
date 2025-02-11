@@ -5,7 +5,6 @@ import { SoferAI, SoferAIClient } from 'soferai';
 enum Status {
   Idle,
   Loading,
-  Typing,
   Finished,
   Error
 }
@@ -57,9 +56,9 @@ export default function SefariaPlugin({ sref }: { sref?: string }) {
             <small>Whoops! Something went wrong.</small>
           </>
         )}
-        {(status === Status.Finished || status === Status.Typing) && (
+        {(status === Status.Finished) && (
           <>
-            <p>{displayText}</p>
+            <p>Ref: {displayText}</p>
           </>
         )}
       </div>
@@ -72,15 +71,17 @@ export default function SefariaPlugin({ sref }: { sref?: string }) {
         setApiKey(key);
         setTranscriptionId(url);
       }}>
-      <h4>OpenAI Settings</h4>
+      <h4>Sofer.Ai Settings</h4>
       <div>
         <label>API Key:<input name="apiKey" type="text" defaultValue={apiKey} /></label>
       </div>
       <div>
-        <label>Base URL: <input name="transcriptionId" type="text" defaultValue={transcriptionId} /></label>
+        <label>Transcription Id:<input name="transcriptionId" type="text" defaultValue={transcriptionId} /></label>
       </div>
         <button type="submit">Update</button>
       </form>
+
+      <div style={{ fontSize: '60%' }}>Ref: {sref}</div>
     </div>
   );
 }
