@@ -5,7 +5,7 @@ module.exports = {
   entry: './plugin.tsx',
   output: {
     filename: 'plugin.js',
-    path: path.resolve(__dirname)
+    path: path.resolve(__dirname, 'dist')
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
@@ -21,9 +21,10 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index_template.html', // uses index.html as the template
+      template: './index.html',
+      filename: 'index.html', // outputs to dist/index.html
       inject: 'head'
     })
   ],
-  mode: 'development' // Switch to 'production' for production builds
+  mode: 'development'
 };
