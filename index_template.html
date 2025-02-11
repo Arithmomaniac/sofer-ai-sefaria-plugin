@@ -4,16 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RefDisplayer</title>
-    <script type="module" src="{{ url_for('static', filename='plugin.js') }}"></script>
-
+    <!-- Removed manual script injection for plugin.js -->
+<body>
     <script>
         const updateSref = () => {
-            sref = document.querySelector('#sref').value;
+            const sref = document.querySelector('#sref').value;
             document.querySelector('sefaria-plugin').setAttribute('sref', sref);
         }
     </script>
-</head>
-<body>
+
     <input type="text" id="sref" placeholder="Genesis 1.1">
     <button onclick="updateSref()">Update</button>
     <sefaria-plugin sref="Genesis 1.1"></sefaria-plugin>

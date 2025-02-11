@@ -5,23 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Flask",
-            "type": "debugpy",
+            "type": "node",
             "request": "launch",
-            "module": "flask",
-            "env": {
-                "FLASK_APP": "serve_app/app.py",
-                "FLASK_DEBUG": "1"
-            },
-            "args": [
-                "run",
-                "--no-debugger",
-                "--no-reload",
-                "--port",
-                "5001"
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
             ],
-            "jinja": true,
-            "justMyCode": true
-        },
+            "program": "${file}"
+        }
     ]
 }
