@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"><head><script defer src="plugin.js"></script></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RefDisplayer</title>
+    <!-- Removed manual script injection for plugin.js -->
+<body>
+    <script>
+        const updateSref = () => {
+            const sref = document.querySelector('#sref').value;
+            document.querySelector('sefaria-plugin').setAttribute('sref', sref);
+        }
+    </script>
+
+    <input type="text" id="sref" placeholder="Genesis 1.1">
+    <button onclick="updateSref()">Update</button>
+    <sefaria-plugin sref="Genesis 1.1"></sefaria-plugin>
+</body>
+</html>
