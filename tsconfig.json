@@ -6,9 +6,17 @@
     "strict": true,
     "outDir": "dist",              // output folder should match webpack.config.js
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"     // set for browser modules
+    "esModuleInterop": true,       // Added for better compatibility
+    "moduleResolution": "node",    // set for browser modules
+    "sourceMap": true              // Added for debugging
   },
   "include": [
+    "src/**/*.ts",                // Include all TS files in src
+    "src/**/*.tsx",               // Include all TSX files in src
     "plugin.tsx"                  // include the entry file for webpack.config.js
+  ],
+  "exclude": [
+    "node_modules",               // Exclude node_modules
+    "dist"                        // Exclude build output
   ]
 }
