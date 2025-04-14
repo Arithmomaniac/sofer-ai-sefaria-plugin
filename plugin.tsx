@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { SoferAI, SoferAIClient } from 'soferai';
+import { findRefs } from './src/SefariaAPI';
 
 enum Status {
   Idle,
@@ -33,7 +34,12 @@ export default function SefariaPlugin({ sref }: { sref?: string }) {
     setStatus(Status.Loading);
     setDisplayText('');
     try {
-      const transcripton = (await soferAiClient?.transcribe.getTranscription(transcriptionId))?.text
+      var transcripton = (await soferAiClient?.transcribe.getTranscription(transcriptionId))?.text
+      transcripton = transcripton?.replace(/<i>[\s\S]*?<\/i>/g, '');
+      if (transcripton) {
+        var response = await findRefs({title: '', body: transcripton}, { debug: 1})
+        console.log(response)
+      }
       setDisplayText(transcripton || '');
       setStatus(Status.Finished);
     } catch (error) {
