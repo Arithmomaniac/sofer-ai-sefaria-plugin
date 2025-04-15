@@ -10,7 +10,8 @@
     "html-webpack-plugin": "^5.6.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "soferai": "^0.1.1"
+    "soferai": "^0.1.1",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",

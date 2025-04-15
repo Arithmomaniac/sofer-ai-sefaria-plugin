@@ -1,51 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { SoferAI, SoferAIClient } from 'soferai';
-import { findRefs } from './src/SefariaAPI';
-
-enum Status {
-  Idle,
-  Loading,
-  Finished,
-  Error
-}
+import { useStore, Status } from './src/store';
 
 export default function SefariaPlugin({ sref }: { sref?: string }) {
-  const [status, setStatus] = useState<Status>(Status.Idle);
-  const [displayText, setDisplayText] = useState('');
-  const [apiKey, setApiKey] = useState('');
-  const [transcriptionId, setTranscriptionId] = useState('');
+  // Get state and actions from Zustand store
+  const {
+    status,
+    displayText,
+    apiKey,
+    transcriptionId,
+    updateSettingsAndFetch
+  } = useStore();
 
-  const [soferAiClient, setSoferAiClient] = useState<SoferAIClient | null>(null);
-
-  useEffect(() => {
-    const newClient = apiKey ? new SoferAIClient({ apiKey }) : new SoferAIClient();
-    setSoferAiClient(newClient);
-  }, [apiKey]);
-
-  useEffect(() => {
-    if (soferAiClient && transcriptionId) {
-      fetchTranscript();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [soferAiClient, transcriptionId]);
-
-  async function fetchTranscript() {
-    setStatus(Status.Loading);
-    setDisplayText('');
-    try {
-      var transcripton = (await soferAiClient?.transcribe.getTranscription(transcriptionId))?.text
-      transcripton = transcripton?.replace(/<i>[\s\S]*?<\/i>/g, '');
-      if (transcripton) {
-        var response = await findRefs({title: '', body: transcripton}, { debug: 1})
-        console.log(response)
-      }
-      setDisplayText(transcripton || '');
-      setStatus(Status.Finished);
-    } catch (error) {
-      setStatus(Status.Error);
-    }
-  }
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', fontSize: '18px' }}>
@@ -73,9 +39,8 @@ export default function SefariaPlugin({ sref }: { sref?: string }) {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const key = formData.get('apiKey') as string;
-        const url = formData.get('transcriptionId') as string;
-        setApiKey(key);
-        setTranscriptionId(url);
+        const id = formData.get('transcriptionId') as string;
+        updateSettingsAndFetch(key, id);
       }}>
       <h4>Sofer.Ai Settings</h4>
       <div>
