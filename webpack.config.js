@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // new import
 
 module.exports = {
-  entry: './plugin.tsx',
+  entry: './plugin.ts',
   output: {
     filename: 'plugin.js',
     path: path.resolve(__dirname, 'dist')
