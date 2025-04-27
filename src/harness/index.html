@@ -4,17 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sofer.Ai Sefaria Plugin</title>
-    <!-- Removed manual script injection for plugin.js -->
+    <script src="plugin.js"></script>
+    <script src="index.js"></script>
 <body>
-    <script>
-        const updateSref = () => {
-            const sref = document.querySelector('#sref').value;
-            document.querySelector('sefaria-plugin').setAttribute('sref', sref);
-        }
-    </script>
-
     <input type="text" id="sref" placeholder="Genesis 1.1">
-    <button onclick="updateSref()">Update</button>
+    <button id="sref-button">Update</button>
     <sefaria-plugin sref="Genesis 1.1"></sefaria-plugin>
 </body>
 </html>

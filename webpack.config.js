@@ -2,9 +2,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // new import
 
 module.exports = {
-  entry: './src/plugin/plugin.ts',
+  entry: {
+    plugin: './src/plugin/plugin.ts',
+    index: './src/harness/index.ts'
+  },
   output: {
-    filename: 'plugin.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
   },
   resolve: {
@@ -23,7 +26,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/harness/index.html',
       filename: 'index.html', // outputs to dist/index.html
-      inject: 'head'
+      inject: false
     })
   ],
   mode: 'development',
