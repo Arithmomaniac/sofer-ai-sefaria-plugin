@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sofer.Ai Sefaria Plugin</title>
+    <title>Sefaria Plugin Template</title>
     <script src="plugin.js"></script>
     <script src="index.js"></script>
 <body>
-    <input type="text" id="sref" placeholder="Genesis 1.1">
-    <button id="sref-button">Update</button>
-    <sefaria-plugin sref="Genesis 1.1"></sefaria-plugin>
+    <div>
+        <input type="text" id="sref" value="Genesis 1.1" placeholder="sref">
+        <button id="sref-button">Update</button>
+    </div>
+    <div>
+        <textarea id="scroll-log" readonly rows="10" cols="50"></textarea>
+    </div>
+    <div>
+        <sefaria-plugin sref="Genesis 1.1"></sefaria-plugin>
+    </div>
 </body>
 </html>

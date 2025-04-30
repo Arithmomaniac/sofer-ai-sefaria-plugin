@@ -33,7 +33,7 @@ module.exports = {
   devtool: 'inline-source-map', // Added for better debugging
   devServer: {
     static: './dist', // Serve files from the dist directory
-    hot: true, // Enable Hot Module Replacement
+    hot: false, // Force full refresh
     open: true // Automatically open the browser
   }
 };
