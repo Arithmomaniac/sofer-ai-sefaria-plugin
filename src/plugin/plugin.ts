@@ -1,5 +1,6 @@
-// Register as a web component
-class SefariaPluginElement extends HTMLElement {
+import type { CustomElement } from "typed-custom-elements"
+
+class SefariaPluginElement extends HTMLElement implements CustomElement {
   static get observedAttributes() {
     return ['sref'];
   }
@@ -21,7 +22,8 @@ class SefariaPluginElement extends HTMLElement {
       this.shadowRootInstance.appendChild(this.contentDiv);
     }
 
-    // Create scroll ref input and button if they don't exist
+    // Create scroll ref input and button if they donnpm install typed-custom-elements
+'t exist
     if (!this.scrollRefInput) {
       // Create container div for input and button
       const container = document.createElement('div');
