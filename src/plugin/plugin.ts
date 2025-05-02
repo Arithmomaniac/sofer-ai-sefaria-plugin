@@ -2,18 +2,37 @@ import type { CustomElement } from "typed-custom-elements"
 
 class SefariaPluginElement extends HTMLElement implements CustomElement {
   static get observedAttributes() {
+    // "sref" is the refrerence string to the current location in the Sefaria app (e.g., "Genesis 1:1")
     return ['sref'];
   }
 
-  private contentDiv: HTMLDivElement | null = null;
-  private scrollRefInput: HTMLInputElement | null = null;
+  /**
+   * Dispatches a custom 'scrollToRef' event to scroll the main Sefaria app to a specified ref.
+   * This is monitored by the Sefaria app, which does the scrolling.
+  *  
+  * @param targetRef - The reference string to scroll to (e.g., "Genesis 1:1")
+   */
+  private dispatchScrollToRef(targetRef: string) {
+    const event = new CustomEvent('scrollToRef', {
+      detail: { sref: targetRef },
+      bubbles: true,
+      composed: true
+    });
+    this.dispatchEvent(event);
+  }
+
   private shadowRootInstance: ShadowRoot;
 
   constructor() {
     super();
-    // Ensure shadow root is created early
     this.shadowRootInstance = this.attachShadow({ mode: 'open' });
   }
+
+  // Everything above this point will be needed in every plugin, more or less.
+  // The following is a stub implementation of the plugin.
+
+  private contentDiv: HTMLDivElement | null = null;
+  private scrollRefInput: HTMLInputElement | null = null;
 
   connectedCallback() {
     // Create the content div if it doesn't exist
@@ -22,8 +41,7 @@ class SefariaPluginElement extends HTMLElement implements CustomElement {
       this.shadowRootInstance.appendChild(this.contentDiv);
     }
 
-    // Create scroll ref input and button if they donnpm install typed-custom-elements
-'t exist
+    // Create scroll ref input and button if they don't exist
     if (!this.scrollRefInput) {
       // Create container div for input and button
       const container = document.createElement('div');
@@ -40,12 +58,7 @@ class SefariaPluginElement extends HTMLElement implements CustomElement {
       scrollButton.addEventListener('click', () => {
         const targetRef = this.scrollRefInput?.value;
         if (targetRef) {
-          const event = new CustomEvent('scrollToRef', {
-            detail: { sref: targetRef },
-            bubbles: true,
-            composed: true
-          });
-          this.dispatchEvent(event);
+          this.dispatchScrollToRef(targetRef);
         }
       });
       container.appendChild(scrollButton);
@@ -78,6 +91,7 @@ class SefariaPluginElement extends HTMLElement implements CustomElement {
   disconnectedCallback() {
     // Optional: Clean up if necessary
     this.contentDiv = null;
+    this.scrollRefInput = null;
   }
 }
 
